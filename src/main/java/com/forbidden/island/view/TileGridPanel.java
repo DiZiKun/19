@@ -1,4 +1,4 @@
-package com.forbidden.island.ui;
+package com.forbidden.island.view;
 
 import com.forbidden.island.utils.Constant;
 import com.forbidden.island.utils.Map;
