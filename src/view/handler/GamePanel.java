@@ -1,4 +1,4 @@
-package ui.handler;
+package view.handler;
 
 import javax.swing.*;
 import java.awt.*;

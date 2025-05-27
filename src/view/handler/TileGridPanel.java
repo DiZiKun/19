@@ -1,4 +1,4 @@
-package ui.handler;
+package view.handler;
 
 import com.forbidden.island.utils.Constant;
 import com.forbidden.island.utils.Map;

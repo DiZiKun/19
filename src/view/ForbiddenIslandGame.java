@@ -1,4 +1,4 @@
-package ui.utils;
+package view;
 
 import com.forbidden.island.adventurer.Adventurer;
 import com.forbidden.island.adventurer.Engineer;
