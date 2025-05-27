@@ -1,4 +1,4 @@
-package cards;
+package model.cards;
 
 import com.forbidden.island.ui.ElementEngine;
 
@@ -9,7 +9,7 @@ import java.util.Iterator;
 /**
  * 洪水牌堆类，继承自抽象的Deck类，专门处理游戏中的洪水牌逻辑。
  */
-public class FloodDeck extends Deck{
+public class FloodDeck extends Deck {
     /** 当前显示在桌面上的洪水牌 */
     private final ArrayList<Integer> displayedCards;
     /** 已移除的洪水牌（对应已经沉没的地块） */

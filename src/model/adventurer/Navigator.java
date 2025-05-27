@@ -1,4 +1,4 @@
-package adventurer;
+package model.adventurer;
 
 /**
  * 导航员角色类，继承自Adventurer。
