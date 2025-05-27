@@ -1,4 +1,4 @@
-package adventurer;
+package model.adventurer;
 
 
 /**

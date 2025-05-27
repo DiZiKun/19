@@ -1,4 +1,4 @@
-package cards;
+package model.cards;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -7,7 +7,7 @@ import java.util.Iterator;
 /**
  * 宝藏牌堆类，继承自抽象的Deck类，实现宝藏牌的具体逻辑。
  */
-public class TreasureDeck extends Deck{
+public class TreasureDeck extends Deck {
     /** 当前抽出的宝藏牌 */
     private final ArrayList<Integer> NTreasureCards;
 
