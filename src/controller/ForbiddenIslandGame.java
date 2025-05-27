@@ -1,4 +1,4 @@
-package view;
+package controller;
 
 import com.forbidden.island.adventurer.Adventurer;
 import com.forbidden.island.adventurer.Engineer;
