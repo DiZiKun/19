@@ -1,5 +1,3 @@
-package ui.utils;
-
 import com.forbidden.island.ui.SplashScreen;
 import com.forbidden.island.utils.Constant;
 
