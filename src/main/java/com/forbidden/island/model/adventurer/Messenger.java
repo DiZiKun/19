@@ -1,4 +1,4 @@
-package com.forbidden.island.adventurer;
+package com.forbidden.island.model.adventurer;
 
 /**
  * 信使角色类，继承自Adventurer。

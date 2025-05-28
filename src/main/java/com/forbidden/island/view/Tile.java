@@ -1,7 +1,7 @@
 package com.forbidden.island.view;
 
 import com.forbidden.island.ForbiddenIslandGame;
-import com.forbidden.island.adventurer.Adventurer;
+import com.forbidden.island.model.adventurer.Adventurer;
 import com.forbidden.island.enums.TileStatus;
 import com.forbidden.island.utils.LogUtil;
 
