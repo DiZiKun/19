@@ -1,4 +1,4 @@
-package view.handler;
+package view;
 
 import com.forbidden.island.utils.Constant;
 import com.forbidden.island.utils.ImageUtil;

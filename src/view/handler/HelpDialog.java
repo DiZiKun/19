@@ -1,6 +1,7 @@
 package view.handler;
 
 import javax.swing.*;
+import java.awt.*;
 
 /**
  * Help dialog class that displays game instructions and rules.
@@ -54,136 +55,110 @@ public class HelpDialog extends JDialog {
     private String getHtmlHelpContent() {
         return """
                 <html>
-                       <head>
-                         <style>
-                           body { font-family: 'Segoe UI', sans-serif; padding: 20px; line-height: 1.6; }
-                           h1, h2 { color: #2c3e50; }
-                           h2 { margin-top: 24px; }
-                           ul, ol { margin-left: 20px; }
-                           li { margin-bottom: 6px; }
-                           .role { font-weight: bold; color: #2980b9; }
-                           .color { font-weight: bold; }
-                           code { background-color: #f4f4f4; padding: 2px 4px; border-radius: 3px; }
-                         </style>
-                       </head>
-                       <body>
-                       <h1>🧭 Forbidden Island Game Manual (English Version)</h1>
-                       <p>Welcome to the world of <b>Forbidden Island</b>! In this cooperative adventure game, you and your teammates must work together to collect four mystical treasures and escape the island before it sinks!</p>
-                       <p>This guide will walk you through the gameplay, button functions, turn order, and role abilities — everything you need to get started.</p>
+                <head>
+                                                <meta charset="UTF-8" />
+                                                <style>
+                                                  body { font-family: 'Segoe UI', sans-serif; padding: 20px; line-height: 1.6; background: #fdfdfd; color: #2c3e50; }
+                                                  h1, h2, h3 { color: #2c3e50; }
+                                                  ul, ol { margin-left: 20px; }
+                                                  li { margin-bottom: 8px; }
+                                                  code { background: #f4f4f4; padding: 2px 4px; border-radius: 4px; }
+                                                  .role { font-weight: bold; color: #2980b9; }
+                                                  .important { background: #fff9c4; padding: 2px 6px; border-radius: 4px; }
+                                                </style>
+                                                <title>Forbidden Island Help (EN)</title>
+                                              </head>
+                                              <body>
+                                              <h1>🌊 Forbidden Island Game Help</h1>
                 
-                       <h2>🧱 Objective</h2>
-                       <ul>
-                         <li>Collect the 4 treasures: 🌊 Ocean’s Chalice, 🔥 Crystal of Fire, 🌪️ Statue of the Wind, 🪨 Earth Stone</li>
-                         <li>Gather all players on <b>Fools’ Landing</b> and use a Helicopter Lift card to escape</li>
-                         <li>Avoid sinking key tiles or losing team members — or you’ll lose the game!</li>
-                       </ul>
+                                              <p>Welcome to <strong>Forbidden Island</strong>, a strategic cooperative game where you and your team must collect the four sacred treasures and escape before the island sinks!</p>
                 
-                       <h2>🎮 Game Interface Overview</h2>
-                       <p><b>Main Components:</b></p>
-                       <ul>
-                         <li><b>Center Area:</b> The game board (24 tiles with player pawns and flooding state)</li>
-                         <li><b>Left Panel:</b> Treasure progress display</li>
-                         <li><b>Right Panel:</b> Flood deck and discard pile</li>
-                         <li><b>Top/Bottom Panels:</b> Players’ hands and pawn icons</li>
-                         <li><b>Bottom Bar:</b> Operation buttons (up to 3 actions per turn)</li>
-                       </ul>
+                                              <h2>📌 Objective</h2>
+                                              <ul>
+                                                <li>Collect the 4 treasures: Ocean’s Chalice, Crystal of Fire, Statue of the Wind, Earth Stone</li>
+                                                <li>Gather all players at <strong>Fools’ Landing</strong> and use a <em>Helicopter Lift</em> card to escape</li>
+                                                <li>Avoid losing key tiles or team members — or the game ends in failure!</li>
+                                              </ul>
                 
-                       <h2>🎮 Turn Overview – What You Do on Your Turn</h2>
-                       <ol>
-                         <li>✅ Perform up to <b>3 actions</b></li>
-                         <li>✅ Automatically draw <b>2 Treasure Cards</b></li>
-                         <li>✅ Automatically draw <b>Flood Cards</b></li>
-                       </ol>
-                       <p><b>💡 Tip:</b> The player whose portrait is highlighted is the one whose turn it is.</p>
+                                              <h2>🧩 Game Setup</h2>
+                                              <ol>
+                                                <li>Choose number of players (2–4) and difficulty (Novice, Normal, Elite, Legendary)</li>
+                                                <li>System shuffles and reveals 6 initial flood cards — flip matching tiles to flooded</li>
+                                                <li>Each player is dealt a role card and placed on their starting tile</li>
+                                                <li>Each player draws 2 treasure cards (replace Water Rise! if drawn initially)</li>
+                                                <li>Set the water meter to chosen difficulty</li>
+                                              </ol>
                 
-                       <h2>🔘 Operation Button Functions</h2>
-                       <ul>
-                         <li><b>Move:</b> Move to an adjacent tile (up/down/left/right; some roles allow diagonal or flying)</li>
-                         <li><b>Shore:</b> Shore up your tile or adjacent flooded tile</li>
-                         li><b>Pass:</b> Give a card to a teammate (Messenger can pass anywhere)</li>
-                         <li><b>Capture:</b> Collect a treasure when on its tile with 4 matching cards</li>
-                         <li><b>Lift Off:</b> Escape the island from Fools’ Landing with all players & 4 treasures</li>
-                         <li><b>Special:</b> Use special cards (🛩️ Helicopter Lift, 🧱 Sandbags)</li>
-                         <li><b>Next:</b> End your turn and proceed to the next player</li>
-                         <li><b>Discard:</b> Discard cards when you exceed 5 in hand</li>
-                         <li><b>Reset:</b> Clear all current selections including chosen adventurer, selected treasure cards, and targeted tiles for movement or special actions.\s
-                         Useful when you want to cancel ongoing operations and restart your turn cleanly.</li>
-                       </ul>
+                                              <h2>🕹️ Player Turn Structure</h2>
+                                              <ol>
+                                                <li><strong>Actions</strong>: Take up to 3 actions (Move, Shore, Pass, Capture, Special)</li>
+                                                <li><strong>Treasure Cards</strong>: Draw 2 from treasure deck</li>
+                                                <li><strong>Flood Cards</strong>: Draw based on current water level</li>
+                                              </ol>
                 
-                       <h2>🕹️ Standard Turn Walkthrough</h2>
-                       <ol>
-                         <li>Identify your role and abilities (e.g., Navigator can move teammates; Engineer can double shore)</li>
-                         <li>Use up to 3 actions:</li>
-                         <ul>
-                           <li>Click <code>Move</code>, then select destination tile</li>
-                           <li>Click <code>Shore</code>, then select tile to shore</li>
-                           <li>Click <code>Pass</code>, then click card and teammate</li>
-                           <li>Click <code>Capture</code> when at a treasure tile with 4 matching cards</li>
-                         </ul>
-                         <li>Click <code>Next</code> to end your turn</li>
-                         <li>System will:
-                           <ul>
-                             <li>Draw 2 Treasure Cards</li>
-                             <li>Draw Flood Cards</li>
-                             <li>Update map status</li>
-                           </ul>
-                         </li>
-                         <li>Next player begins</li>
-                       </ol>
+                                              <h2>🎮 Action Buttons</h2>
+                                              <ul>
+                                                <li><code>Move</code>: Move to adjacent tile (Explorer can move diagonally, Pilot can fly)</li>
+                                                <li><code>Shore</code>: Flip a flooded tile back (Engineer shores 2; Explorer can shore diagonally)</li>
+                                                <li><code>Pass</code>: Give cards to a player on the same tile (Messenger can pass to anyone)</li>
+                                                <li><code>Capture</code>: Exchange 4 matching cards at a treasure tile to capture treasure</li>
+                                                <li><code>Special</code>: Use special cards (Helicopter Lift, Sandbags)</li>
+                                                <li><code>Lift Off</code>: Escape from Fools’ Landing if all players and treasures are ready</li>
+                                                <li><code>Next</code>: End turn and switch to next player</li>
+                                                <li><code>Discard</code>: Drop cards if over the 5-card hand limit</li>
+                                                <li><code>Reset</code>: Cancel current selections and reset the turn</li>
+                                              </ul>
                 
-                       <h2>👥 Player Roles (Abilities + Pawn Colors)</h2>
-                       <p>Each player is randomly assigned a role, each with a unique ability and distinct pawn color:</p>
-                       <ul>
-                         <li>⚫ (Black)<b>Diver:</b> Can cross any number of adjacent sunken or missing tiles</li>
-                         <li>🔴 (Red)<b>Engineer:</b> Can shore up <b>2</b> tiles in one action</li>
-                         <li>🟢 (Green)<b>Explorer:</b> Can move/shore diagonally</li>
-                         <li>⚪ (White)<b>Messenger:</b> Can pass cards to <b>any player</b>, not just on same tile</li>
-                         <li>🟡 (Yellow)<b>Navigator:</b> Can move teammates up to 2 spaces on their turn</li>
-                         <li>🔵 (Blue)<b>Pilot:</b> Once per turn, can fly to <b>any tile</b> on the board</li>
-                       </ul>
-                       <p><b>🎯 Tip:</b> Mastering role cooperation is the key to victory!</p>
+                                              <h2>🧙‍♂️ Role Abilities</h2>
+                                              <ul>
+                                                <li><span class="role">Engineer (Red)</span>: Shore 2 adjacent flooded tiles in one action</li>
+                                                <li><span class="role">Messenger (White)</span>: Pass any card to any player from any location</li>
+                                                <li><span class="role">Pilot (Blue)</span>: Once per turn, fly to any tile</li>
+                                                <li><span class="role">Diver (Black)</span>: Move through adjacent flooded or sunken tiles</li>
+                                                <li><span class="role">Explorer (Green)</span>: Move and shore diagonally</li>
+                                                <li><span class="role">Navigator (Yellow)</span>: Move another player up to 2 tiles on your turn</li>
+                                              </ul>
                 
-                       <h2>📦 Treasure Collection</h2>
-                       <p>Each treasure has 2 specific collection tiles. A player must:</p>
-                       <ul>
-                         <li>Be on one of those tiles</li>
-                         <li>Hold 4 matching treasure cards</li>
-                         <li>Click <b>Capture</b> to collect</li>
-                       </ul>
+                                              <h2>🎴 Special Cards</h2>
+                                              <ul>
+                                                <li><strong>Helicopter Lift</strong>: Move players on the same tile to any tile or escape from Fools’ Landing</li>
+                                                <li><strong>Sandbags</strong>: Shore any tile at any time (cannot recover sunken tiles)</li>
+                                                <li><strong>Water Rise!</strong>: Raise water level, reshuffle flood discard pile to top</li>
+                                              </ul>
                 
-                       <h2>☠️ Game Over Conditions (Any of the following)</h2>
-                       <ul>
-                         <li>Both tiles for a single treasure sink before it’s collected</li>
-                         <li><b>Fools’ Landing</b> tile sinks</li>
-                         <li>A player is trapped on a tile with no escape</li>
-                         <li>Water level reaches the skull mark</li>
-                       </ul>
+                                              <h2>📦 Treasure Collection</h2>
+                                              <p>Collect a treasure by:</p>
+                                              <ul>
+                                                <li>Moving to one of the two corresponding tiles</li>
+                                                <li>Having 4 matching treasure cards</li>
+                                                <li>Clicking <code>Capture</code> to collect</li>
+                                              </ul>
                 
-                       <h2>🧠 Tips for New Players</h2>
-                       <ul>
-                         <li>Frequently shore up <b>Fools’ Landing</b> and treasure tiles!</li>
-                         <li>Don’t hold too many cards — hand limit is 5</li>
-                         <li>Use 🛩️ Helicopter and 🧱 Sandbags wisely</li>
-                         <li>Cooperate effectively — pass cards, shore together, delegate</li>
-                         <li><b>🔔 Whoever’s avatar is glowing — it’s their turn!</b></li>
-                       </ul>
+                                              <h2>🚨 Game Over Conditions</h2>
+                                              <ul>
+                                                <li>Both tiles of a treasure sink before it's collected</li>
+                                                <li>Fools’ Landing sinks</li>
+                                                <li>A player is on a tile that sinks with no adjacent tile to swim to</li>
+                                                <li>Water level reaches the skull icon</li>
+                                              </ul>
                 
-                       <h2>🧾 Game Setup</h2>
-                       <ol>
-                         <li>Click <b>Start Game</b> on the Welcome screen</li>
-                         <li>Choose number of players (2–4) and difficulty</li>
-                         <li>System deals cards, assigns roles, and places tiles</li>
-                         <li>First player begins with 3 actions</li>
-                       </ol>
+                                              <h2>🧠 Gameplay Tips</h2>
+                                              <ul>
+                                                <li>Keep <strong>Fools’ Landing</strong> and treasure tiles shored!</li>
+                                                <li>Use <strong>Helicopter</strong> and <strong>Sandbags</strong> cards at the right moments</li>
+                                                <li>Watch your hand size — you can only hold 5 cards</li>
+                                                <li>Coordinate with teammates — this is a cooperative game!</li>
+                                              </ul>
                 
-                       <h2>🏁 Winning Conditions</h2>
-                       <ul>
-                         <li>All players reach <b>Fools’ Landing</b></li>
-                         <li>All 4 treasures are collected</li>
-                         <li>At least one player uses a Helicopter Lift to escape</li>
-                       </ul>
-                       <p>🎉 Congratulations, you win!</p>
-                       </body>
+                                              <h2>🏁 Winning Conditions</h2>
+                                              <ul>
+                                                <li>All 4 treasures are captured</li>
+                                                <li>All players are on Fools’ Landing</li>
+                                                <li>Helicopter Lift card is used to escape</li>
+                                              </ul>
+                
+                                              <p><strong>🌟 Victory awaits — teamwork is your key to survival!</strong></p>
+                                              </body>
                        </html>
 """;
     }
