@@ -11,94 +11,95 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 /**
- * ForbiddenIslandFrame 继承自 JFrame，是游戏主窗口的顶层容器，
- * 负责初始化窗口属性，布局游戏面板与操作面板，并在打开时弹出设置对话框。
+ * ForbiddenIslandFrame extends JFrame and serves as the top-level container for the game's main window.
+ * Responsible for initializing window properties, laying out game panels and operation panels,
+ * and displaying the settings dialog when the window opens.
  */
 public class ForbiddenIslandFrame extends JFrame {
 
     /**
-     * 构造方法，设置窗口标题并初始化窗口大小、位置和布局。
-     * @param title 窗口标题
-     * @throws HeadlessException 无显示环境时抛出
+     * Constructor sets the window title and initializes window size, position, and layout.
+     * @param title Window title
+     * @throws HeadlessException Thrown when running in a headless environment
      */
     public ForbiddenIslandFrame(String title) throws HeadlessException {
-        super(title);   // 调用父类构造器设置标题
+        super(title);   // Call parent constructor to set title
 
-        // 获取屏幕尺寸，方便窗口居中显示
+        // Get screen dimensions for centering the window
         Toolkit toolkit = Toolkit.getDefaultToolkit();
         int screenWidth = toolkit.getScreenSize().width;
         int screenHeight = toolkit.getScreenSize().height;
         this.setResizable(false);
 
-        // 设置窗口布局为BorderLayout，5像素水平和垂直间距
-        this.setLayout(new BorderLayout(5, 5)); // 组件方向
+        // Set window layout to BorderLayout with 5-pixel horizontal and vertical gaps
+        this.setLayout(new BorderLayout(5, 5)); // Component orientation
 
-        // 设置窗口初始位置和大小，使窗口居中显示
+        // Set window initial position and size for center display
         this.setBounds((screenWidth - Constant.FRAME_WIDTH) / 2,
                 (screenHeight - Constant.FRAME_HEIGHT) / 2-20,
                 Constant.FRAME_WIDTH,
                 Constant.FRAME_HEIGHT);
 
-        // 调用初始化方法，添加面板和监听器
+        // Call initialization method to add panels and listeners
         init();
         setVisible(true);
     }
 
     /**
-     * 初始化窗口内容：
-     * 创建主面板，设置垂直布局，添加游戏面板和操作面板，
-     * 并设置窗口打开监听器，弹出游戏设置对话框。
+     * Initialize window contents:
+     * Creates main panel with vertical layout, adds game panel and operation panel,
+     * and sets window open listener to display game settings dialog.
      */
     private void init() {
-        // 1. 创建主容器（改用垂直Box布局或GridBagLayout）
+        // 1. Create main container (using vertical Box layout or GridBagLayout)
         JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS)); // 垂直排列
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS)); // Vertical arrangement
 
-        // 2. 获取游戏面板和控制台面板
+        // 2. Get game panel and operation panel
         JPanel gamePanel = new GamePanel().getGamePanel();
         Box operateBox = new OperatePanel().getBox();
 
-        // 3. 设置面板对齐方式
+        // 3. Set panel alignment
         gamePanel.setAlignmentX(Component.CENTER_ALIGNMENT);
         operateBox.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        // 4. 添加面板到主容器
+        // 4. Add panels to main container
         mainPanel.add(gamePanel);
         mainPanel.add(operateBox);
 
-        // 5. 将主容器添加到JFrame的中心区域
+        // 5. Add main container to JFrame's center area
         this.add(mainPanel, BorderLayout.CENTER);
 
-        // 6. 添加窗口事件监听器，窗口打开时弹出设置对话框
+        // 6. Add window event listener to show settings dialog when window opens
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowOpened(WindowEvent e) {
-                showSettingsDialog();   // 弹出游戏参数设置窗口
+                showSettingsDialog();   // Display game settings dialog
             }
         });
     }
 
     /**
-     * 显示游戏设置对话框，允许用户选择玩家数和难度，
-     * 根据用户选择初始化游戏或退出程序。
+     * Display game settings dialog allowing users to select player count and difficulty.
+     * Initializes game or exits program based on user selection.
      */
     private void showSettingsDialog() {
         SettingsDialog dialog = new SettingsDialog(this);
-        dialog.setVisible(true);    // 显示模态对话框，阻塞直到关闭
+        dialog.setVisible(true);    // Show modal dialog, blocks until closed
 
         if (dialog.isConfirmed()) {
-            // 如果用户确认设置，获取玩家数量和难度等级
+            // If user confirms settings, get player count and difficulty level
             int players = dialog.getPlayerCount();
             int difficulty = dialog.getDifficulty();
 
-            // 初始化游戏核心逻辑，传入玩家数量和水位难度
+            // Initialize game core logic with player count and water level difficulty
             ForbiddenIslandGame.init(players, difficulty);
 
-            // 初始化控制器和监听器，设置游戏交互逻辑
+            // Initialize controller and listener, set up game interaction logic
             GameController.getInstance();
             new GameListener();
         } else {
-            // 用户取消设置，关闭程序
+            // User cancelled settings, close program
             System.exit(0);
         }
     }

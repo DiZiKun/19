@@ -1,145 +1,182 @@
 package controller;
 
-import com.forbidden.island.adventurer.Adventurer;
-import com.forbidden.island.adventurer.Engineer;
-import com.forbidden.island.ui.ElementEngine;
-import com.forbidden.island.ui.handler.RenderingEngine;
+import com.forbidden.island.model.adventurer.Adventurer;
+import com.forbidden.island.model.adventurer.Engineer;
 import com.forbidden.island.utils.LogUtil;
+import com.forbidden.island.view.ElementEngine;
+import com.forbidden.island.view.handler.RenderingEngine;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 
+/**
+ * ForbiddenIslandGame class is the core game controller that manages the game flow and state.
+ * It handles round progression, player actions, game phases, and victory/defeat conditions.
+ * The class maintains game state including current round, action counts, and special game modes.
+ */
 public class ForbiddenIslandGame {
-    // 当前轮数（从0开始计）
+    /**
+     * Current round number (starting from 0)
+     */
     private static int roundNum = 0;
-    // 虚拟轮次编号（用于救援阶段）
+
+    /**
+     * Virtual round number (used during rescue phase)
+     */
     private static int fakeRoundNum = -1;
-    // 当前玩家已经执行的动作数量（每轮最多3个动作）
+
+    /**
+     * Number of actions taken by current player (maximum 3 per round)
+     */
     private static int actionCount = 0;
-    // 虚拟动作数（用于救援时限制最多2步移动）
+
+    /**
+     * Virtual action count (used during rescue to limit movement to 2 steps)
+     */
     private static int fakeActionCount = 0;
-    // 当前游戏玩家总数
+
+    /**
+     * Total number of players in current game
+     */
     private static int numOfPlayer;
-    // 表示本轮是否已经进入“抽取宝藏卡片”和“沉没版块”阶段
+
+    /**
+     * Indicates if current round has completed treasure card drawing and tile sinking phases
+     */
     private static boolean stage23Done = false;
-    // 是否处于“救援模式”，即有玩家落水需救援
+
+    /**
+     * Indicates if game is in rescue mode (players need to be saved from water)
+     */
     private static boolean need2save = false;
-    // 是否在虚拟回合（处理落水玩家）
+
+    /**
+     * Indicates if currently in virtual round (handling players in water)
+     */
     private static boolean inFakeRound = false;
-    // 当前落水玩家的 ID 列表
+
+    /**
+     * List of player IDs currently in water
+     */
     private static ArrayList<Integer> playerIDinWater;
 
     /**
-     * 初始化游戏，设置玩家数量和水位等级。
+     * Initializes the game with specified number of players and water level.
+     * Sets up game elements, renders initial interface, and starts first round.
      */
     public static void init(int numOfPlayers, int waterLevel) {
         numOfPlayer = numOfPlayers;
         playerIDinWater = new ArrayList<>();
 
-        // 初始化游戏元素引擎（牌堆、角色、地图等）
+        // Initialize game element engine (card decks, characters, map, etc.)
         ElementEngine.init(numOfPlayers, waterLevel);
         LogUtil.console("Initialise Players...");
 
-        // 初始化渲染引擎（负责图形界面刷新）
+        // Initialize rendering engine (responsible for GUI updates)
         RenderingEngine.init();
 
-        // 初始沉没一些版块
+        // Initial tile sinking
         LogUtil.console("Island starts to sink...");
         RenderingEngine.getFloodRendering().update();
         ElementEngine.getBoard().sinkTiles(ElementEngine.getFloodDeck().getCards());
-        ElementEngine.getFloodDeck().discard(); // 将抽到的卡放入弃牌堆
-        ElementEngine.getFloodDeck().set2Norm(); // 牌堆恢复为普通模式
+        ElementEngine.getFloodDeck().discard(); // Add drawn cards to discard pile
+        ElementEngine.getFloodDeck().set2Norm(); // Reset deck to normal mode
 
-        // 游戏开始提示
+        // Game start message
         LogUtil.console("[ Game Start ! ]");
         LogUtil.console("[ Player " + (roundNum + 1) + " ]\n(" + ElementEngine.getAdventurers()[roundNum].getName() + "'s Round)");
         LogUtil.console("Please Take Up To 3 Actions");
     }
 
     /**
-     * 阶段2和3：抽取2张宝藏卡片，并抽取洪水卡沉没版块。
+     * Handles phases 2 and 3: Drawing 2 treasure cards and sinking tiles with flood cards.
+     * Also processes any water rise cards drawn and updates game state accordingly.
      */
     public static void Stage23() {
-        // 抽取2张宝藏卡
+        // Draw 2 treasure cards
         ElementEngine.getDisplayedTreasureCard().addAll(ElementEngine.getTreasureDeck().getCards());
-        actionCount = 3;    // 表示阶段已完成，动作数为3
+        actionCount = 3;    // Mark phase as complete by setting action count to 3
 
         RenderingEngine.getTreasureRendering().update();
 
-        // 检查是否抽到“水位上升”卡，如果有，则触发相应处理
+        // Check for water rise cards and handle them
         Iterator<Integer> iterator = ElementEngine.getDisplayedTreasureCard().iterator();
         while (iterator.hasNext()) {
             Integer treasureID = iterator.next();
-            if (treasureID == 25 || treasureID == 26 || treasureID == 27) { // 特殊卡：水位上升
-                ElementEngine.getWaterMeter().WaterRise();  // 增加水位
-                ElementEngine.getFloodDeck().putBack2Top(); // 将洪水弃牌堆放回顶端
-                ElementEngine.getTreasureDeck().discard(treasureID);     // 弃掉这张卡
-                iterator.remove();  // 移除该卡片，避免重复处理
+            if (treasureID == 25 || treasureID == 26 || treasureID == 27) { // Special cards: Water Rise
+                ElementEngine.getWaterMeter().WaterRise();  // Increase water level
+                ElementEngine.getFloodDeck().putBack2Top(); // Return flood discard pile to top
+                ElementEngine.getTreasureDeck().discard(treasureID);     // Discard the card
+                iterator.remove();  // Remove card to avoid duplicate processing
             }
         }
 
-        // 更新界面渲染
-//        RenderingEngine.getTreasureRendering().update();
+        // Update interface displays
+        RenderingEngine.getTreasureRendering().update();
         RenderingEngine.getPlayerRendering().update();
         RenderingEngine.getWaterMeterRendering().update();
         RenderingEngine.getBoardRendering().update();
 
-        // 抽洪水卡沉没相应版块
+        // Draw flood cards and sink corresponding tiles
         RenderingEngine.getFloodRendering().update();
         ElementEngine.getBoard().sinkTiles(ElementEngine.getFloodDeck().getCards());
 
-        ElementEngine.getFloodDeck().discard(); // 将沉没卡加入弃牌堆
+        ElementEngine.getFloodDeck().discard(); // Add sunk cards to discard pile
 
-        // 标记阶段完成
+        // Mark phase as complete
         stage23Done = true;
     }
 
     /**
-     * 当前玩家轮次结束后的处理逻辑
+     * Handles end of current player's round:
+     * - Checks and handles card limit
+     * - Updates game state
+     * - Checks for game over conditions
+     * - Prepares for next player's turn
      */
     public static void RoundEnd() {
-        // 若卡片数量超限（手牌+展示卡超过5张），需先弃牌
+        // If card count exceeds limit (hand + displayed > 5), require discard first
         if (ElementEngine.getAdventurers()[roundNum].getHandCards().size() + ElementEngine.getDisplayedTreasureCard().size() > 5) {
             LogUtil.console("You Have More Than 5 Cards, Please Discard First!");
-            ElementEngine.resetCardsInRound();  // 重置回合相关状态
+            ElementEngine.resetCardsInRound();  // Reset round-related state
             return;
         } else {
-
-            // 合并手牌并清空展示区
+            // Merge hand cards and clear display area
             ElementEngine.getAdventurers()[roundNum].getHandCards().addAll(ElementEngine.getDisplayedTreasureCard());
             ElementEngine.getDisplayedTreasureCard().clear();
-            ElementEngine.selectPawn(-1);   // 取消选中的角色
-            ElementEngine.resetCardsInRound();  // 重置回合数据
+            ElementEngine.selectPawn(-1);   // Cancel selected character
+            ElementEngine.resetCardsInRound();  // Reset round data
             RenderingEngine.getTreasureRendering().update();
             RenderingEngine.getPlayerRendering().update();
         }
 
-        // 判断游戏是否失败：所有神殿都沉没
+        // Check for game failure: all shrines are sunk
         if (ElementEngine.getBoard().isShrinesFlooded()) {
             LogUtil.console("[!] Shrines And Treasures Are Sunk");
-            finish(false);    // 游戏失败
+            finish(false);    // Game over (failure)
             return;
         }
 
-        // 重置状态，进入下一位玩家回合
+        // Reset state and prepare for next player's turn
         ElementEngine.selectPawn(-1);
         if (ElementEngine.getAdventurers()[roundNum] instanceof Engineer) {
-            ((Engineer) ElementEngine.getAdventurers()[roundNum]).resetShoreUpCount();  // 重置工程师的特殊能力使用次数
+            ((Engineer) ElementEngine.getAdventurers()[roundNum]).resetShoreUpCount();  // Reset Engineer's special ability usage count
         }
         actionCount = 0;
         roundNum++;
-        roundNum = roundNum % numOfPlayer;  // 回合顺序轮换
+        roundNum = roundNum % numOfPlayer;  // Rotate turn order
         stage23Done = false;
 
         LogUtil.console("[ Player " + (roundNum + 1) + " ]\n(" + ElementEngine.getAdventurers()[roundNum].getName() + "'s Round)");
-        RenderingEngine.getPlayerRendering().update();  // 更新玩家面板
+        RenderingEngine.getPlayerRendering().update();  // Update player panel
     }
 
     /**
-     * 若有玩家落水，将进入“救援回合”来允许他们移动到相邻格子。
+     * Initiates rescue rounds when players have fallen into water.
+     * Allows them to move to adjacent tiles to save themselves.
      */
     public static void SavePlayersRound() {
-        // 所有落水者已救援，恢复正常回合
+        // All players rescued, return to normal round
         if (playerIDinWater.isEmpty()) {
             roundNum = fakeRoundNum;
             fakeRoundNum = -1;
@@ -150,18 +187,18 @@ public class ForbiddenIslandGame {
             return;
         }
 
-        // 处理下一个落水玩家
+        // Handle next player in water
         for (Adventurer adventurer : ElementEngine.getAdventurers()) {
             if (playerIDinWater.contains(adventurer.getId())) {
                 roundNum = adventurer.getOrder();
-                actionCount = 2; // 落水玩家仅能移动2步
+                actionCount = 2; // Players in water can only move 2 steps
                 RenderingEngine.getControllersRendering().update();
                 playerIDinWater.remove((Integer) adventurer.getId());
 
                 int x = adventurer.getX();
                 int y = adventurer.getY();
 
-                // 非特殊角色必须有至少一个可移动的邻接格
+                // Non-special characters must have at least one adjacent tile to swim to
                 boolean canSwim = checkCanSwim(x, y, adventurer.getName());
                 if (!canSwim) {
                     finish(false);
@@ -174,19 +211,19 @@ public class ForbiddenIslandGame {
     }
 
     /**
-     * 判断玩家当前位置是否存在可以游泳的邻接格子。
-     * 考虑边界情况与“探索者”角色的斜向移动能力。
+     * Checks if there are any adjacent tiles the player can swim to from current position.
+     * Considers boundary conditions and Explorer's diagonal movement ability.
      */
     private static boolean checkCanSwim(int x, int y, String name) {
         boolean isExplorer = name.equals("Explorer");
 
-        // 普通四方向检查
+        // Check four basic directions
         boolean up = x > 0 && ElementEngine.getBoard().getTile(x - 1, y).isExist();
         boolean down = x < 5 && ElementEngine.getBoard().getTile(x + 1, y).isExist();
         boolean left = y > 0 && ElementEngine.getBoard().getTile(x, y - 1).isExist();
         boolean right = y < 5 && ElementEngine.getBoard().getTile(x, y + 1).isExist();
 
-        // 探索者额外斜向检查
+        // Explorer can also check diagonals
         boolean upLeft = isExplorer && x > 0 && y > 0 && ElementEngine.getBoard().getTile(x - 1, y - 1).isExist();
         boolean upRight = isExplorer && x > 0 && y < 5 && ElementEngine.getBoard().getTile(x - 1, y + 1).isExist();
         boolean downLeft = isExplorer && x < 5 && y > 0 && ElementEngine.getBoard().getTile(x + 1, y - 1).isExist();
@@ -196,7 +233,8 @@ public class ForbiddenIslandGame {
     }
 
     /**
-     * 游戏结束逻辑（true 为胜利，false 为失败）
+     * Game end logic (true for victory, false for failure)
+     * Updates the interface and displays appropriate message.
      */
     public static void finish(boolean isWin) {
         if (isWin) {
@@ -219,17 +257,21 @@ public class ForbiddenIslandGame {
         }
     }
 
-    // take an action
+    /**
+     * Increment action count when player takes an action
+     */
     public static void doAction() {
         actionCount += 1;
     }
 
-    // take one more action
+    /**
+     * Decrement action count (used for special abilities that grant extra actions)
+     */
     public static void moreAction() {
         actionCount -= 1;
     }
 
-    // getters and setters
+    // Getters and setters
     public static void setPlayerIDinWater(ArrayList<Integer> playerIDinWater) {
         ForbiddenIslandGame.playerIDinWater.addAll(playerIDinWater);
     }

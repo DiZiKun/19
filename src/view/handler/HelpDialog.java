@@ -1,9 +1,23 @@
 package view.handler;
 
 import javax.swing.*;
-import java.awt.*;
 
+/**
+ * Help dialog class that displays game instructions and rules.
+ * Provides a comprehensive HTML-formatted guide including:
+ * - Game objectives and rules
+ * - Interface overview
+ * - Turn structure
+ * - Button functions
+ * - Player roles and abilities
+ * - Winning and losing conditions
+ */
 public class HelpDialog extends JDialog {
+    /**
+     * Constructor initializes and configures the help dialog window.
+     * Sets up a scrollable text area with HTML-formatted game instructions.
+     * Dialog is modal and centered on screen.
+     */
     public HelpDialog() {
         setTitle("Game Help");
         setSize(800, 650);
@@ -14,7 +28,7 @@ public class HelpDialog extends JDialog {
         JEditorPane helpPane = new JEditorPane();
         helpPane.setContentType("text/html");
         helpPane.setEditable(false);
-        helpPane.setText(getHtmlHelpContent()); // 使用 HTML 说明文档
+        helpPane.setText(getHtmlHelpContent()); // Use HTML documentation
 
         JScrollPane scrollPane = new JScrollPane(helpPane);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
@@ -23,6 +37,20 @@ public class HelpDialog extends JDialog {
         setVisible(true);
     }
 
+    /**
+     * Returns the HTML-formatted help content as a string.
+     * Contains detailed game instructions including:
+     * - Game objective and overview
+     * - Interface components
+     * - Turn structure and actions
+     * - Button functions
+     * - Role descriptions and abilities
+     * - Treasure collection mechanics
+     * - Win/loss conditions
+     * - Tips for new players
+     * 
+     * @return HTML-formatted string containing complete game documentation
+     */
     private String getHtmlHelpContent() {
         return """
                 <html>
@@ -72,13 +100,14 @@ public class HelpDialog extends JDialog {
                        <ul>
                          <li><b>Move:</b> Move to an adjacent tile (up/down/left/right; some roles allow diagonal or flying)</li>
                          <li><b>Shore:</b> Shore up your tile or adjacent flooded tile</li>
-                         <li><b>Pass:</b> Give a card to a teammate (Messenger can pass anywhere)</li>
+                         li><b>Pass:</b> Give a card to a teammate (Messenger can pass anywhere)</li>
                          <li><b>Capture:</b> Collect a treasure when on its tile with 4 matching cards</li>
                          <li><b>Lift Off:</b> Escape the island from Fools’ Landing with all players & 4 treasures</li>
-                         <li><b>Special Actions:</b> Use special cards (🛩️ Helicopter Lift, 🧱 Sandbags)</li>
+                         <li><b>Special:</b> Use special cards (🛩️ Helicopter Lift, 🧱 Sandbags)</li>
                          <li><b>Next:</b> End your turn and proceed to the next player</li>
                          <li><b>Discard:</b> Discard cards when you exceed 5 in hand</li>
-                         <li><b>Reset:</b> Reset current selections or actions</li>
+                         <li><b>Reset:</b> Clear all current selections including chosen adventurer, selected treasure cards, and targeted tiles for movement or special actions.\s
+                         Useful when you want to cancel ongoing operations and restart your turn cleanly.</li>
                        </ul>
                 
                        <h2>🕹️ Standard Turn Walkthrough</h2>
