@@ -1,25 +1,26 @@
 package com.forbidden.island.view.handler;
 
-import com.forbidden.island.utils.Constant;
-import com.forbidden.island.utils.ImageUtil;
-import com.forbidden.island.view.ElementEngine;
 import com.forbidden.island.view.TreasurePanel;
+import com.forbidden.island.view.ElementEngine;
+import com.forbidden.island.utils.ImageUtil;
+import com.forbidden.island.utils.Constant;
 
 import javax.swing.*;
 
 /**
- * WaterMeterRendering 类实现了 IRendering 接口，
- * 负责游戏中水位计（水表）的界面渲染与更新。
+ * WaterMeterRendering class implements IRendering interface,
+ * responsible for rendering and updating the water meter (water level gauge)
+ * display in the game interface.
  */
 public class WaterMeterRendering implements IRendering {
 
     /**
-     * 构造方法
-     * 初始化时设置水位计的图标，显示初始状态。
+     * Constructor
+     * Sets the water meter icon during initialization, showing initial state.
      */
     public WaterMeterRendering() {
-        // 通过 ElementEngine 获取当前水位计对应的图片路径
-        // 设置 TreasurePanel 中 waterMeter 组件的图标，并指定图片宽高
+        // Get current water meter image path through ElementEngine
+        // Set icon for waterMeter component in TreasurePanel, specifying image width and height
         TreasurePanel.waterMeter.setIcon(new ImageIcon(
                 ImageUtil.getImage(ElementEngine.getWaterMeterImg(),
                         Constant.WATER_METER_WIDTH,
@@ -27,12 +28,13 @@ public class WaterMeterRendering implements IRendering {
     }
 
     /**
-     * update 方法
-     * 当游戏状态改变水位计时，刷新水位计的图标，反映最新的水位状态。
+     * update method
+     * Called when game state changes water level, refreshes water meter icon
+     * to reflect latest water level state.
      */
     @Override
     public void update() {
-        // 重新获取当前水位计图片，更新图标显示
+        // Get current water meter image and update icon display
         TreasurePanel.waterMeter.setIcon(new ImageIcon(
                 ImageUtil.getImage(ElementEngine.getWaterMeterImg(),
                         Constant.WATER_METER_WIDTH,
@@ -40,12 +42,13 @@ public class WaterMeterRendering implements IRendering {
     }
 
     /**
-     * finish 方法
-     * 游戏结束或不再需要显示水位计时，隐藏水位计组件。
+     * finish method
+     * Called when game ends or water meter no longer needs to be displayed,
+     * hides the water meter component.
      */
     @Override
     public void finish() {
-        // 设置水位计组件不可见，隐藏于界面上
+        // Set water meter component invisible, hide from interface
         TreasurePanel.waterMeter.setVisible(false);
     }
 }

@@ -1,43 +1,43 @@
 package com.forbidden.island.view;
 
-import com.forbidden.island.ForbiddenIslandGame;
-import com.forbidden.island.model.adventurer.Adventurer;
-import com.forbidden.island.enums.TileStatus;
+import com.forbidden.island.model.enums.TileStatus;
 import com.forbidden.island.utils.LogUtil;
+import com.forbidden.island.controller.ForbiddenIslandGame;
+import com.forbidden.island.model.adventurer.Adventurer;
 
 import java.util.ArrayList;
 
 /**
- * Tile 类表示游戏地图上的一个单元格，
- * 它存储了关于该格子（图块）的一切信息，包括图像路径、状态、是否存在、是否被夺宝、以及在该格子上的冒险者。
+ * Tile class represents a single cell on the game map,
+ * storing all information about the tile including image path, status, existence,
+ * treasure capture state, and adventurers on this tile.
  */
 public class Tile {
-    // 图块 ID（唯一标识该 Tile），默认值为 -1
+    // Tile ID (unique identifier for this Tile), default value is -1
     private int tileId = -1;
-    // 图块的当前状态（正常、淹没或沉没）
+    // Current tile status (normal, flooded, or sunk)
     private TileStatus status;
-    // 图像路径，用于界面展示图块（完整路径 = imgFolder + imgFile）
+    // Image path for UI display (complete path = imgFolder + imgFile)
     private String img;
-    // 图像文件夹路径，默认为 "/Tiles/" 或 "/SubmersedTiles/"
+    // Image folder path, defaults to "/Tiles/" or "/SubmersedTiles/"
     private String imgFolder;
-    // 图像文件名，格式如 "1.png"，可根据 tileId 自动生成
+    // Image filename, format like "1.png", auto-generated based on tileId
     private String imgFile;
-    // 标识该图块是否仍存在于地图中（沉没后将设为 false）
+    // Indicates if this tile still exists on the map (set to false when sunk)
     private boolean isExist;
-    // 当前站在该图块上的冒险者 ID 列表（按 Integer 存储）
+    // List of adventurer IDs currently standing on this tile (stored as Integers)
     private ArrayList<Integer> adventurersOnBoard;
-    // 是否已经在该图块上夺得了宝物
+    // Whether treasure has been captured on this tile
     private boolean isCaptured = false;
 
     private static final int FOOLS_LANDING_TILE_ID = 14;
 
-
     /**
-     * 创建一个初始状态的图块，图块上已经有一个冒险者。
+     * Create a tile in initial state with one adventurer on it.
      *
-     * @param tileId 图块编号
-     * @param playerID 初始位于该图块的玩家 ID
-     * @param isExist 图块是否存在
+     * @param tileId tile number
+     * @param playerID ID of player initially on this tile
+     * @param isExist whether tile exists
      */
     public Tile(int tileId, int playerID, boolean isExist) {
         this.adventurersOnBoard = new ArrayList<>();
@@ -51,10 +51,10 @@ public class Tile {
     }
 
     /**
-     * 创建一个初始状态的图块，图块上没有冒险者。
+     * Create a tile in initial state with no adventurers on it.
      *
-     * @param tileId 图块编号
-     * @param isExist 图块是否存在
+     * @param tileId tile number
+     * @param isExist whether tile exists
      */
     public Tile(int tileId, boolean isExist) {
         this.adventurersOnBoard = new ArrayList<>();
@@ -67,47 +67,47 @@ public class Tile {
     }
 
     /**
-     * 创建一个空的占位图块（用于边界填充或不可访问区域）。
+     * Create an empty placeholder tile (used for boundary filling or inaccessible areas).
      *
-     * @param isExist 图块是否存在
+     * @param isExist whether tile exists
      */
     public Tile(boolean isExist) {
         this.isExist = isExist;
     }
 
     /**
-     * 将一个玩家移动到该图块上（将其 ID 添加到列表中）。
+     * Move a player onto this tile (add their ID to the list).
      *
-     * @param playerID 玩家 ID
+     * @param playerID player ID
      */
     public void moveOn(int playerID) {
         this.adventurersOnBoard.add(playerID);
     }
 
     /**
-     * 将一个玩家从该图块移除（移动离开）。
+     * Remove a player from this tile (when moving away).
      *
-     * @param adventurer 要移除的冒险者对象
+     * @param adventurer adventurer object to remove
      */
     public void moveOff(Adventurer adventurer) {
         adventurersOnBoard.remove((Integer) adventurer.getId());
     }
 
     /**
-     * 判断两个冒险者是否同时在该图块上。
-     * 用于判断是否能进行物品交换等操作。
+     * Check if two adventurers are both on this tile.
+     * Used to determine if item exchange or other operations are possible.
      *
-     * @param sender 发起者
-     * @param receiver 接收者
-     * @return 是否都在当前图块上
+     * @param sender initiator
+     * @param receiver recipient
+     * @return whether both are on the current tile
      */
     public boolean CanPass(Adventurer sender, Adventurer receiver) {
         return adventurersOnBoard.contains(sender.getId()) && adventurersOnBoard.contains(receiver.getId());
     }
 
     /**
-     * 尝试将该图块从淹没状态复原（挽救图块）。
-     * 只有在状态为 Flooded（淹没）时才允许操作。
+     * Attempt to restore this tile from flooded state (shore up the tile).
+     * Operation only allowed when status is Flooded.
      */
     public void shoreUp() {
         if (status == TileStatus.Flooded) {
@@ -120,12 +120,12 @@ public class Tile {
     }
 
     /**
-     * 将该图块下沉（改变状态并更新图像）。
+     * Sink this tile (change status and update image).
      *
-     * 正常 → 淹没：更新图像为“淹没版”
-     * 淹没 → 沉没：移除图像和存在标记，若为重要地点（如Fool's Landing），结束游戏
+     * Normal → Flooded: Update image to "flooded version"
+     * Flooded → Sunk: Remove image and existence flag, end game if critical location (like Fool's Landing)
      *
-     * @return true 如果图块被彻底沉没，false 如果只是淹没
+     * @return true if tile is completely sunk, false if only flooded
      */
     public boolean sinkTile() {
         if (status == TileStatus.Normal) {
@@ -137,8 +137,8 @@ public class Tile {
             status = TileStatus.Sunk;
             img = null;
             isExist = false;
-            if (tileId == FOOLS_LANDING_TILE_ID) { // tileId 14 被设定为“Fool's Landing”，游戏关键位置
-                ForbiddenIslandGame.finish(false);  // 结束游戏（失败）
+            if (tileId == FOOLS_LANDING_TILE_ID) {
+                ForbiddenIslandGame.finish(false);  // End game (failure)
                 LogUtil.console("[!] Fool's Landing Is Flooded!");
             }
             return true;
@@ -149,19 +149,19 @@ public class Tile {
     }
 
     /**
-     * 设置该图块为已夺宝状态，并更新图像文件。
-     * 通常用于玩家成功夺得图块上的宝物后调用。
+     * Set this tile to captured state and update image file.
+     * Usually called after players successfully capture the treasure on the tile.
      */
     public void setCaptured() {
         isCaptured = true;
-        this.imgFile = tileId + 24 + ".png";    // 特殊图像表示“已夺宝”
+        this.imgFile = tileId + 24 + ".png";    // Special image indicating "captured"
         this.img = imgFolder + imgFile;
     }
 
     /**
-     * 判断该图块是否还未被夺宝。
+     * Check if this tile has not been captured yet.
      *
-     * @return true 如果还未被夺宝
+     * @return true if not yet captured
      */
     public boolean isUnCaptured() {
         return !isCaptured;

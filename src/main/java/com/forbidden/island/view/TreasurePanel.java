@@ -1,7 +1,7 @@
 package com.forbidden.island.view;
 
-import com.forbidden.island.utils.Constant;
 import com.forbidden.island.utils.ImageUtil;
+import com.forbidden.island.utils.Constant;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,47 +9,47 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 /**
- * TreasurePanel 类用于展示游戏中的宝藏卡牌和水位计面板。
+ * TreasurePanel class is used to display treasure cards and water meter panel in the game.
  */
 public class TreasurePanel {
-    // 静态标签：用于显示水位计（供外部访问和设置）
+    // Static label: used to display water meter (accessible externally)
     public static JLabel waterMeter = new JLabel();
 
-    // 静态按钮列表：用于显示当前抽到的宝藏卡牌（最多显示两张）
+    // Static button list: used to display currently drawn treasure cards (maximum 2)
     public static ArrayList<JButton> treasureCards;
 
-    // 主面板，封装所有 UI 组件
+    // Main panel, encapsulating all UI components
     private final JPanel treasurePanel;
 
     /**
-     * 构造方法，初始化面板布局和各个 UI 元件。
-     * 包括两个宝藏卡牌位、一个弃牌堆图标、一个抽牌堆图标以及水位计。
+     * Constructor, initializes panel layout and UI components.
+     * Includes two treasure card slots, a discard pile icon, a draw pile icon, and water meter.
      */
     public TreasurePanel() {
-        // 设置主面板为 BorderLayout：顶部放置卡牌堆，中间放置水位计
+        // Set main panel to BorderLayout: cards pile at top, water meter in center
         treasurePanel = new JPanel(new BorderLayout(1, 3));
 
-        // 创建宝藏卡牌堆面板，垂直排列（4行1列）：弃牌堆、抽牌堆、两张手牌
+        // Create treasure card pile panel, vertical layout (4 rows 1 column): discard pile, draw pile, two hand cards
         JPanel treasureCardPile = new JPanel(new GridLayout(4, 1, 1, 3));
         treasureCards = new ArrayList<>();
 
-        // 创建弃牌堆图标标签
+        // Create discard pile icon label
         JLabel pile = new JLabel();
         Dimension treasureCardSize = new Dimension(Constant.TREASURE_WIDTH, Constant.TREASURE_HEIGHT);
         pile.setPreferredSize(treasureCardSize);
 
-        // 设置弃牌堆的图像
+        // Set discard pile image
         pile.setIcon(new ImageIcon(ImageUtil.getImage("/Back/Treasure Discard.png", Constant.TREASURE_WIDTH, Constant.TREASURE_HEIGHT)));
-        treasureCardPile.add(pile); // 添加弃牌堆图标到面板
+        treasureCardPile.add(pile); // Add discard pile icon to panel
 
-        // 创建抽牌堆图标标签
+        // Create draw pile icon label
         JLabel back = new JLabel();
         back.setPreferredSize(treasureCardSize);
-        // 设置抽牌堆图像，并旋转 90 度
+        // Set draw pile image, rotated 90 degrees
         back.setIcon(new ImageIcon(Objects.requireNonNull(ImageUtil.getImage("/Back/Treasure Deck.png", Constant.TREASURE_WIDTH, Constant.TREASURE_HEIGHT, 90d))));
-        treasureCardPile.add(back); // 添加抽牌堆图标到面板
+        treasureCardPile.add(back); // Add draw pile icon to panel
 
-        // 初始化并添加两张卡位（按钮，默认禁用）
+        // Initialize and add two card slots (buttons, initially disabled)
         for (int i = 0; i < 2; i++) {
             treasureCards.add(new JButton());
             treasureCards.get(i).setPreferredSize(treasureCardSize);
@@ -57,17 +57,17 @@ public class TreasurePanel {
             treasureCardPile.add(treasureCards.get(i));
         }
 
-        // 将宝藏卡堆面板添加到主面板顶部
+        // Add treasure card pile panel to main panel top
         treasurePanel.add(treasureCardPile, BorderLayout.NORTH);
 
-        // 添加水位计标签到主面板中间区域
+        // Add water meter label to main panel center area
         treasurePanel.add(waterMeter, BorderLayout.CENTER);
     }
 
     /**
-     * 获取构建好的宝藏面板，用于嵌入其他容器中。
+     * Get the constructed treasure panel for embedding in other containers.
      *
-     * @return 包含宝藏卡堆和水位计的主面板
+     * @return Main panel containing treasure card pile and water meter
      */
     public JPanel getTreasurePanel() {
         return treasurePanel;

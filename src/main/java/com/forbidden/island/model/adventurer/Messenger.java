@@ -1,8 +1,8 @@
 package com.forbidden.island.model.adventurer;
 
 /**
- * 信使角色类，继承自Adventurer。
- * 角色ID设为3。
+ * Messenger character class, extends Adventurer.
+ * Character ID is set to 3.
  */
 public class Messenger extends Adventurer {
     public Messenger(int order) {

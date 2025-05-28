@@ -1,99 +1,99 @@
 package com.forbidden.island.view;
 
-import com.forbidden.island.ForbiddenIslandGame;
-import com.forbidden.island.ui.handler.RenderingEngine;
 import com.forbidden.island.utils.LogUtil;
+import com.forbidden.island.view.handler.RenderingEngine;
+import com.forbidden.island.controller.ForbiddenIslandGame;
 import com.forbidden.island.utils.Map;
 
 import java.util.ArrayList;
 
 /**
- * TileBoard 类表示游戏地图的数据结构，由 Tile（方块）组成
+ * TileBoard class represents the game map data structure, composed of Tiles
  */
 public class TileBoard {
-    // 6x6 游戏地图（方块）数组
+    // 6x6 game map (tile) array
     private final Tile[][] tileMap;
-    // 所有方块的 ID 列表（顺序与地图布置一致）
+    // List of all tile IDs (in order consistent with map layout)
     private final ArrayList<Integer> tiles;
-    // 是否允许当前玩家移动
+    // Whether current player is allowed to move
     private boolean canMove;
-    // 是否允许当前玩家加固（shore up）方块
+    // Whether current player is allowed to shore up tiles
     private boolean canShoreUp;
 
     /**
-     * 构造函数，初始化游戏地图
-     * @param players 玩家 ID 列表
-     * @param tiles 方块 ID 列表（已洗牌的）
+     * Constructor, initializes the game map
+     * @param players list of player IDs
+     * @param tiles list of tile IDs (shuffled)
      */
     public TileBoard(ArrayList<Integer> players, ArrayList<Integer> tiles) {
         this.tiles = tiles;
-        tileMap = new Tile[6][6]; // 初始化 6x6 地图网格
-        int tileIdx = 0; // 当前正在处理的 tile 索引
+        tileMap = new Tile[6][6]; // Initialize 6x6 map grid
+        int tileIdx = 0; // Current tile index being processed
 
-        // 遍历地图格子
+        // Traverse map cells
         for (int i = 0; i < 6; i++) {
             for (int j = 0; j < 6; j++) {
                 int flatIndex = i * 6 + j;
 
-                // 如果是空白格子（不放置任何方块）
+                // If this is an empty cell (no tile placement)
                 if (Map.blankLayout.contains(flatIndex)) {
-                    tileMap[i][j] = new Tile(false); // 创建空白 Tile
+                    tileMap[i][j] = new Tile(false); // Create empty Tile
                 } else {
                     int tileId = this.tiles.get(tileIdx);
 
-                    // 如果此方块上有玩家初始放置
+                    // If there's a player initially placed on this tile
                     if (players.contains(tileId - 9)) {
                         int playerID = tileId - 9;
-                        tileMap[i][j] = new Tile(tileId, playerID, true); // 初始化带玩家的方块
-                        // 设置玩家的初始位置
+                        tileMap[i][j] = new Tile(tileId, playerID, true); // Initialize tile with player
+                        // Set player's initial position
                         ElementEngine.getAdventurers()[players.indexOf(playerID)].setPosition(i, j);
                     } else {
-                        tileMap[i][j] = new Tile(tileId, true); // 正常方块
+                        tileMap[i][j] = new Tile(tileId, true); // Normal tile
                     }
-                    tileIdx++; // 移动到下一个 tile
+                    tileIdx++; // Move to next tile
                 }
             }
         }
     }
 
     /**
-     * 下沉一组方块
-     * @param sinkTiles 要下沉的方块 ID 列表
+     * Sink a group of tiles
+     * @param sinkTiles list of tile IDs to sink
      */
     public void sinkTiles(ArrayList<Integer> sinkTiles) {
         for (int sinkTile : sinkTiles) {
-            // 获取该 tile 的坐标
+            // Get coordinates for this tile
             int[] coords = Map.coordinatesMatcher.get(this.tiles.indexOf(sinkTile));
 
-            // 如果该 tile 被完全移除（下沉两次）
+            // If tile is completely removed (sunk twice)
             if (tileMap[coords[0]][coords[1]].sinkTile()) {
-                // 从 flood deck 中移除该卡片
+                // Remove this card from flood deck
                 ElementEngine.getFloodDeck().removeFloodCard(sinkTile);
 
-                // 如果此 tile 上仍有玩家
+                // If there are still players on this tile
                 if (!tileMap[coords[0]][coords[1]].getPlayerOnBoard().isEmpty()) {
                     for (int player : tileMap[coords[0]][coords[1]].getPlayerOnBoard()) {
                         LogUtil.console(Map.adventurerMatcher.get(player) + " Has Fallen Into Sea");
                     }
 
-                    // 标记需要营救
+                    // Mark need for rescue
                     ForbiddenIslandGame.setNeed2save(true);
                     ForbiddenIslandGame.setPlayerIDinWater(tileMap[coords[0]][coords[1]].getPlayerOnBoard());
 
-                    // 清除 tile 上的所有玩家
+                    // Clear all players from tile
                     tileMap[coords[0]][coords[1]].getPlayerOnBoard().clear();
                 }
             }
         }
 
-        // 如果有玩家掉入水中，触发假回合以进行营救逻辑
+        // If players have fallen into water, trigger fake round for rescue logic
         if (ForbiddenIslandGame.isNeed2save()) {
-            ForbiddenIslandGame.setInFakeRound(true); // 开启假回合
-            ForbiddenIslandGame.setFakeRoundNum(ForbiddenIslandGame.getRoundNum()); // 保存当前回合数
-            ForbiddenIslandGame.SavePlayersRound(); // 保存玩家状态
+            ForbiddenIslandGame.setInFakeRound(true); // Start fake round
+            ForbiddenIslandGame.setFakeRoundNum(ForbiddenIslandGame.getRoundNum()); // Save current round number
+            ForbiddenIslandGame.SavePlayersRound(); // Save player states
         }
 
-        // 重新渲染游戏地图
+        // Re-render game map
         RenderingEngine.getBoardRendering().update();
     }
 
@@ -105,38 +105,54 @@ public class TileBoard {
         this.canShoreUp = canShoreUp;
     }
 
+    /**
+     * Check if any shrine (treasure location) is completely flooded.
+     * Each treasure has two shrine locations (tiles), and if both tiles for a treasure
+     * are sunk before the treasure is captured, the game is lost.
+     *
+     * @return true if any treasure's both shrine locations are sunk and uncaptured
+     */
     public boolean isShrinesFlooded() {
+        // Array to track shrine pairs, one element per treasure type (4 treasures total)
+        // Initial value 1 means both shrines are safe
+        // Value 0 means one shrine is sunk
+        // Value -1 means both shrines are sunk
         int[] isShrinesFlooded = {1, 1, 1, 1};
+
+        // Check all tiles on the board
         for (int i = 0; i < 6; i++) {
             for (int j = 0; j < 6; j++) {
                 switch (tileMap[i][j].getTileId()) {
                     case 1:
-                    case 2:
+                    case 2:  // First treasure shrine pair (tiles 1 and 2)
                         if (!tileMap[i][j].isExist() && tileMap[i][j].isUnCaptured()) {
-                            isShrinesFlooded[0]--;
+                            isShrinesFlooded[0]--;  // Decrement counter for first treasure
                         }
                         break;
                     case 3:
-                    case 4:
+                    case 4:  // Second treasure shrine pair (tiles 3 and 4)
                         if (!tileMap[i][j].isExist() && tileMap[i][j].isUnCaptured()) {
-                            isShrinesFlooded[1]--;
+                            isShrinesFlooded[1]--;  // Decrement counter for second treasure
                         }
                         break;
                     case 5:
-                    case 6:
+                    case 6:  // Third treasure shrine pair (tiles 5 and 6)
                         if (!tileMap[i][j].isExist() && tileMap[i][j].isUnCaptured()) {
-                            isShrinesFlooded[2]--;
+                            isShrinesFlooded[2]--;  // Decrement counter for third treasure
                         }
                         break;
                     case 7:
-                    case 8:
+                    case 8:  // Fourth treasure shrine pair (tiles 7 and 8)
                         if (!tileMap[i][j].isExist() && tileMap[i][j].isUnCaptured()) {
-                            isShrinesFlooded[3]--;
+                            isShrinesFlooded[3]--;  // Decrement counter for fourth treasure
                         }
                         break;
                 }
             }
         }
+
+        // Check if any treasure has both shrines sunk (counter reached -1)
+        // If true, this means a treasure is lost and game should end
         for (int isFlooded : isShrinesFlooded) {
             if (isFlooded == -1) {
                 return true;

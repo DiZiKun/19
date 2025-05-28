@@ -1,10 +1,10 @@
 package com.forbidden.island.controller;
 
-import com.forbidden.island.utils.Map;
 import com.forbidden.island.view.ElementEngine;
 import com.forbidden.island.view.GamePanel;
 import com.forbidden.island.view.TileGridPanel;
 import com.forbidden.island.view.TreasurePanel;
+import com.forbidden.island.utils.Map;
 
 import javax.swing.*;
 import java.util.List;

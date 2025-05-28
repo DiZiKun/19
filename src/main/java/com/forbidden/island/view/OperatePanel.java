@@ -5,59 +5,91 @@ import java.awt.*;
 import java.util.ArrayList;
 
 /**
- * OperatePanel 是一个操作面板类，用于展示游戏中各种操作按钮。
- * 使用垂直 Box 布局容器，并在其中嵌套一个包含按钮的水平 GridLayout。
+ * OperatePanel is a control panel class that displays various game operation buttons.
+ * Uses a vertical Box layout container with a nested horizontal GridLayout containing the buttons.
  */
 public class OperatePanel {
-    // 静态按钮列表，供全局访问使用（如控制器为按钮添加监听器）
+    // Static button list for global access (e.g., for controllers to add button listeners)
     public static ArrayList<JButton> opButtons = new ArrayList<>();
 
-    // 垂直方向的 Box 容器，作为该面板的根容器
+    // Vertical Box container serving as the root container for this panel
     private final Box box = Box.createVerticalBox();
 
     /**
-     * 构造方法：初始化按钮并构建面板布局
+     * Constructor: Initializes buttons and builds panel layout
      */
     public OperatePanel() {
 
-        // 0. 初始化所有按钮（按顺序添加到列表中）
-        opButtons.add(new JButton("Start"));
-        opButtons.add(new JButton("Move"));
-        opButtons.add(new JButton("Shore"));
-        opButtons.add(new JButton("Pass"));
-        opButtons.add(new JButton("Capture"));
-        opButtons.add(new JButton("Lift Off"));
-        opButtons.add(new JButton("Special Actions"));
-        opButtons.add(new JButton("Next"));
-        opButtons.add(new JButton("Discard"));
-        opButtons.add(new JButton("Reset"));
+        // 0. Initialize all buttons (added to list in order)
+        opButtons.add(createStyledButton("Start", new Color(52, 73, 94), new Color(44, 62, 80)));       // index 0
+        opButtons.add(createStyledButton("Move", new Color(52, 152, 219), new Color(41, 128, 185)));     // 1
+        opButtons.add(createStyledButton("Shore", new Color(230, 126, 34), new Color(211, 84, 0)));      // 2
+        opButtons.add(createStyledButton("Pass", new Color(155, 89, 182), new Color(142, 68, 173)));     // 3
+        opButtons.add(createStyledButton("Capture", new Color(46, 204, 113), new Color(39, 174, 96)));   // 4
+        opButtons.add(createStyledButton("Lift Off", new Color(241, 196, 15), new Color(243, 156, 18))); // 5
+        opButtons.add(createStyledButton("Special", new Color(149, 165, 166), new Color(127, 140, 141))); // 6
+        opButtons.add(createStyledButton("Next", new Color(44, 62, 80), new Color(52, 73, 94)));         // 7
+        opButtons.add(createStyledButton("Discard", new Color(231, 76, 60), new Color(192, 57, 43)));    // 8
+        opButtons.add(createStyledButton("Reset", new Color(52, 152, 219), new Color(41, 128, 185)));    // 9
 
-        // 1. 创建一个 1 行 9 列的网格布局（用于排列按钮）
+        // 1. Create a 1-row, 9-column grid layout (for button arrangement)
         GridLayout gridLayout = new GridLayout(1, 9, 0, 2);
         JPanel actionPanel = new JPanel();
         actionPanel.setLayout(gridLayout);
-        // 2. 添加除 "Start" 按钮（index 0）外的其他按钮到 actionPanel
+        // 2. Add all buttons except "Start" (index 0) to actionPanel
         for (int i = 1; i <= 9; i++) {
             actionPanel.add(opButtons.get(i));
         }
 
-        // 设置按钮面板的首选大小（宽度会由布局控制，高度设为 50）
-        actionPanel.setPreferredSize(new Dimension(50, 50));
+        // Set preferred size for button panel (width controlled by layout, height set to 30)
+        actionPanel.setPreferredSize(new Dimension(50, 30));
 
-        // 3. 将 actionPanel 添加到 box 布局中
-        // 添加上下间隔（垂直间距）
-        box.add(Box.createVerticalStrut(5));      // 顶部空白
-        box.add(Box.createVerticalStrut(5));      // 第二层空白（可去重）
-        box.add(actionPanel);                     // 主操作按钮区
-        box.add(Box.createVerticalGlue());        // 底部弹性填充，自动填满剩余空间
+        // 3. Add actionPanel to box layout
+        // Add vertical spacing
+        box.add(Box.createVerticalStrut(1));      // Top spacing
+        box.add(Box.createVerticalStrut(5));      // Second layer spacing (can be consolidated)
+        box.add(actionPanel);                     // Main operation button area
+        box.add(Box.createVerticalGlue());        // Bottom elastic filling, automatically fills remaining space
     }
 
     /**
-     * 获取构建完成的 Box 容器，用于外部组件嵌套调用。
-     * @return Box 包含操作按钮的面板
+     * Get the constructed Box container for external component nesting.
+     * @return Box Panel containing operation buttons
      */
     public Box getBox() {
         return box;
     }
 
+    /**
+     * Creates a styled button with custom colors and hover effects.
+     *
+     * @param text Button text
+     * @param baseColor Default button color
+     * @param hoverColor Color when mouse hovers over button
+     * @return Styled JButton instance
+     */
+    private JButton createStyledButton(String text, Color baseColor, Color hoverColor) {
+        JButton button = new JButton(text);
+        button.setFont(new Font("Arial", Font.BOLD, 16));
+        button.setForeground(Color.WHITE);
+        button.setBackground(baseColor);
+        button.setFocusPainted(false);
+        button.setContentAreaFilled(true);
+        button.setOpaque(true);
+        button.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
+
+        button.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent e) {
+                button.setBackground(hoverColor);
+            }
+
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent e) {
+                button.setBackground(baseColor);
+            }
+        });
+
+        return button;
+    }
 }

@@ -3,70 +3,70 @@ package com.forbidden.island.utils;
 import java.util.Objects;
 
 /**
- * 游戏中使用的全局常量类。
- * 包含界面尺寸、图像尺寸、资源路径等配置信息。
+ * Global constants class used in the game.
+ * Contains configuration information such as interface dimensions, image sizes, and resource paths.
  */
 public abstract class Constant {
 
-    // ====== 窗口相关尺寸 ======
+    // ====== Window Dimensions ======
 
-    /** 主窗口的宽度（像素） */
+    /** Main window width (pixels) */
     public static final int FRAME_WIDTH = 1080;
 
-    /** 主窗口的高度（像素） */
-    public static final int FRAME_HEIGHT = 1030;
+    /** Main window height (pixels) */
+    public static final int FRAME_HEIGHT = 810;
 
-    // ====== 冒险者图像尺寸 ======
+    // ====== Adventurer Image Dimensions ======
 
-    /** 冒险者图像的宽度（像素） */
+    /** Adventurer image width (pixels) */
     public static final int ADVENTURER_WIDTH = 73;
 
-    /** 冒险者图像的高度（像素） */
-    public static final int ADVENTURER_HEIGHT = 85;
+    /** Adventurer image height (pixels) */
+    public static final int ADVENTURER_HEIGHT = 50;
 
-    // ====== 洪水图像尺寸 ======
+    // ====== Flood Image Dimensions ======
 
-    /** 洪水图像的宽度（像素） */
+    /** Flood image width (pixels) */
     public static final int FLOOD_WIDTH = 120;
 
-    /** 洪水图像的高度（像素） */
-    public static final int FLOOD_HEIGHT = 85;
+    /** Flood image height (pixels) */
+    public static final int FLOOD_HEIGHT = 50;
 
-    // ====== 宝藏图像尺寸 ======
+    // ====== Treasure Image Dimensions ======
 
-    /** 宝藏图像的宽度（像素） */
+    /** Treasure image width (pixels) */
     public static final int TREASURE_WIDTH = 120;
 
-    /** 宝藏图像的高度（像素） */
-    public static final int TREASURE_HEIGHT = 85;
+    /** Treasure image height (pixels) */
+    public static final int TREASURE_HEIGHT = 50;
 
-    // ====== 地砖图像尺寸 ======
+    // ====== Tile Image Dimensions ======
 
-    /** 地图单元格（地砖）的宽度（像素） */
-    public static final int TILE_WIDTH = 110;
+    /** Map tile width (pixels) */
+    public static final int TILE_WIDTH = 159;
 
-    /** 地图单元格（地砖）的高度（像素） */
-    public static final int TILE_HEIGHT = 85;
+    /** Map tile height (pixels) */
+    public static final int TILE_HEIGHT = 90;
 
-    // ====== 游戏棋盘尺寸 ======
+    // ====== Game Board Dimensions ======
 
-    /** 游戏棋盘区域的宽度（像素） */
+    /** Game board area width (pixels) */
     public static final int BOARD_WIDTH = 700;
 
-    /** 游戏棋盘区域的高度（像素） */
+    /** Game board area height (pixels) */
     public static final int BOARD_HEIGHT = 700;
 
-    // ====== 水位计图像尺寸 ======
+    // ====== Water Meter Image Dimensions ======
 
-    /** 水位计图像的宽度（像素） */
+    /** Water meter image width (pixels) */
     public static final int WATER_METER_WIDTH = 120;
 
-    /** 水位计图像的高度（像素） */
+    /** Water meter image height (pixels) */
     public static final int WATER_METER_HEIGHT = 350;
 
-    // ====== 资源路径 ======
+    // ====== Resource Paths ======
 
-    /** 图像资源的根目录路径（获取类路径下的 /image 文件夹） */
+    /** Root directory path for image resources (gets the /image folder from the classpath) */
     public static final String RESOURCES_PATH = Objects.requireNonNull(
             Constant.class.getResource("/image")
     ).getPath();

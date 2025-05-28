@@ -1,8 +1,8 @@
 package com.forbidden.island.model.adventurer;
 
 /**
- * 探险家角色类，继承自Adventurer。
- * 角色ID设为2。
+ * Explorer character class, extends Adventurer.
+ * Character ID is set to 2.
  */
 public class Explorer extends Adventurer {
     public Explorer(int order) {
