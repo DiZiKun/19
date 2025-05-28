@@ -1,7 +1,7 @@
 package view.handler;
 
-import com.forbidden.island.utils.ImageUtil;
 import com.forbidden.island.utils.Constant;
+import com.forbidden.island.utils.ImageUtil;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,65 +9,65 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 /**
- * FloodPanel 类负责创建和管理游戏中洪水牌区域的图形界面组件，
- * 包括显示洪水弃牌堆、洪水牌堆背面图和当前显示的洪水牌按钮。
+ * FloodPanel class is responsible for creating and managing the graphical interface components
+ * of the flood card area in the game, including displaying the flood discard pile,
+ * flood deck back image, and current flood card buttons.
  */
 public class FloodPanel {
 
-
     /**
-     * 静态列表，存储当前显示的洪水牌按钮，
-     * 用于游戏过程中显示、隐藏或更新对应的洪水牌。
+     * Static list storing currently displayed flood card buttons,
+     * used to show, hide, or update corresponding flood cards during gameplay.
      */
     public static ArrayList<JButton> floodCards;
 
     /**
-     * JPanel容器，用于承载所有洪水相关的组件（标签、按钮等）。
+     * JPanel container for holding all flood-related components (labels, buttons, etc.).
      */
     private final JPanel floodPanel;
 
     /**
-     * FloodPanel 构造方法，初始化界面组件：
-     * 创建一个8行1列的网格布局面板，添加弃牌堆和牌堆背面标签，
-     * 并创建6个初始不可见的洪水牌按钮，方便动态显示和交互。
+     * FloodPanel constructor, initializes interface components:
+     * Creates an 8x1 grid layout panel, adds discard pile and deck back labels,
+     * and creates 6 initially invisible flood card buttons for dynamic display and interaction.
      */
     public FloodPanel() {
-        // 创建一个网格布局面板，8行1列，水平间距1，垂直间距3
+        // Create a grid layout panel, 8 rows, 1 column, with 1 horizontal and 3 vertical spacing
         floodPanel = new JPanel(new GridLayout(8, 1, 1, 3));
 
-        // 创建显示“洪水弃牌堆”的标签
+        // Create label for "Flood Discard Pile"
         JLabel pile = new JLabel();
-        // 设置标签尺寸，使用预定义常量宽高
+        // Set label size using predefined constant width and height
         Dimension floodCardSize = new Dimension(Constant.FLOOD_WIDTH, Constant.FLOOD_HEIGHT);
         pile.setPreferredSize(floodCardSize);
-        // 设置标签图标，使用ImageUtil工具加载图片并调整大小
+        // Set label icon using ImageUtil to load and resize image
         pile.setIcon(new ImageIcon(ImageUtil.getImage("/Back/Flood Discard.png", Constant.FLOOD_WIDTH, Constant.FLOOD_HEIGHT)));
-        floodPanel.add(pile); // 将标签添加到面板中
+        floodPanel.add(pile); // Add label to panel
 
-        // 创建显示“洪水牌堆背面”的标签
+        // Create label for "Flood Deck Back"
         JLabel back = new JLabel();
         back.setPreferredSize(floodCardSize);
-        // 加载背面图片，旋转90度（参数90d表示旋转角度）
+        // Load back image and rotate 90 degrees (parameter 90d indicates rotation angle)
         back.setIcon(new ImageIcon(Objects.requireNonNull(
                 ImageUtil.getImage("/Back/Flood Deck.png", Constant.FLOOD_WIDTH, Constant.FLOOD_HEIGHT, 90d))));
-        floodPanel.add(back); // 添加到面板中
+        floodPanel.add(back); // Add to panel
 
-        // 初始化存放洪水牌按钮的列表
+        // Initialize list for flood card buttons
         floodCards = new ArrayList<>();
 
-        // 创建6个洪水牌按钮，用于显示当前洪水牌
+        // Create 6 flood card buttons for displaying current flood cards
         for (int i = 0; i < 6; i++) {
             JButton button = new JButton();
-            button.setPreferredSize(floodCardSize); // 设置按钮尺寸
-            button.setVisible(false); // 初始隐藏，等待游戏逻辑激活显示
+            button.setPreferredSize(floodCardSize); // Set button size
+            button.setVisible(false); // Initially hidden, waiting for game logic to activate display
             floodCards.add(button);
-            floodPanel.add(button); // 添加按钮到面板
+            floodPanel.add(button); // Add button to panel
         }
     }
 
     /**
-     * 获取FloodPanel的JPanel容器，供外部调用并加入到主界面中。
-     * @return floodPanel 组件容器
+     * Get the FloodPanel's JPanel container for external use and addition to main interface.
+     * @return floodPanel component container
      */
     public JPanel getFloodPanel() {
         return floodPanel;

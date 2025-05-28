@@ -1,8 +1,8 @@
 package model.adventurer;
 
 /**
- * 导航员角色类，继承自Adventurer。
- * 角色ID设为4。
+ * Navigator character class, extends Adventurer.
+ * Character ID is set to 4.
  */
 public class Navigator extends Adventurer {
     public Navigator(int order) {

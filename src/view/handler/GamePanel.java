@@ -6,70 +6,71 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * GamePanel 是游戏主界面的核心面板，负责组织和布局游戏中的各种子面板：
- * 玩家信息面板（上下两组），游戏地图面板，宝藏面板，洪水面板。
- * 同时保存玩家棋子按钮列表和玩家手牌按钮列表，方便游戏逻辑操作。
+ * GamePanel is the core panel of the game interface, responsible for organizing and laying out
+ * various sub-panels in the game: player information panels (top and bottom groups),
+ * game map panel, treasure panel, and flood panel.
+ * Also maintains lists of player pawn buttons and player hand card buttons for game logic operations.
  */
 public class GamePanel {
     /**
-     * 存放所有玩家棋子的按钮，方便在游戏中控制棋子状态和事件。
-     * 顺序对应玩家：玩家1-玩家4的棋子按钮
+     * Stores all player pawn buttons for controlling pawn states and events during gameplay.
+     * Order corresponds to players: Player 1-4's pawn buttons
      */
     public static ArrayList<JButton> playerPawnList;
 
     /**
-     * 存放每位玩家手牌按钮的列表。每个元素是一个玩家的手牌按钮列表。
-     * playerHandCards.get(i) 表示第 i 个玩家的手牌按钮列表。
+     * List storing each player's hand card buttons. Each element is a list of hand card buttons for one player.
+     * playerHandCards.get(i) represents the hand card button list for player i.
      */
     public static ArrayList<List<JButton>> playerHandCards;
 
     /**
-     * 主游戏面板，承载所有子面板
+     * Main game panel, holds all sub-panels
      */
     private final JPanel gamePanel;
 
     /**
-     * 构造器：初始化所有子面板并将它们添加到主游戏面板中，完成布局设置。
+     * Constructor: initializes all sub-panels and adds them to the main game panel, completing layout setup.
      */
     public GamePanel() {
-        // 创建上下两个玩家面板，分别显示两个玩家的相关信息与操作按钮
+        // Create top and bottom player panels, displaying information and operation buttons for two players each
         PlayerPanel playerPanelUp = new PlayerPanel();
         PlayerPanel playerPanelDown = new PlayerPanel();
 
-        // 创建游戏地图面板（瓦片网格）
+        // Create game map panel (tile grid)
         TileGridPanel tileGridPanel = new TileGridPanel();
 
-        // 创建宝藏显示面板
+        // Create treasure display panel
         TreasurePanel treasurePanel = new TreasurePanel();
 
-        // 创建洪水显示面板
+        // Create flood display panel
         FloodPanel floodPanel = new FloodPanel();
 
-        // 创建主面板，使用BorderLayout布局，间隔5像素
+        // Create main panel with BorderLayout, 5-pixel gaps
         gamePanel = new JPanel();
         gamePanel.setLayout(new BorderLayout(5, 5));
 
-        // 按照BorderLayout的方位依次添加子面板
-        gamePanel.add(playerPanelDown.getDuoPlayerPanel(), BorderLayout.SOUTH); // 底部玩家面板
-        gamePanel.add(playerPanelUp.getDuoPlayerPanel(), BorderLayout.NORTH);// 顶部玩家面板
-        gamePanel.add(floodPanel.getFloodPanel(), BorderLayout.EAST);// 右侧洪水面板
-        gamePanel.add(treasurePanel.getTreasurePanel(), BorderLayout.WEST);// 左侧宝藏面板
-        gamePanel.add(tileGridPanel.getBoard(), BorderLayout.CENTER);// 中央地图面板
+        // Add sub-panels according to BorderLayout positions
+        gamePanel.add(playerPanelDown.getDuoPlayerPanel(), BorderLayout.SOUTH); // Bottom player panel
+        gamePanel.add(playerPanelUp.getDuoPlayerPanel(), BorderLayout.NORTH);// Top player panel
+        gamePanel.add(floodPanel.getFloodPanel(), BorderLayout.EAST);// Right flood panel
+        gamePanel.add(treasurePanel.getTreasurePanel(), BorderLayout.WEST);// Left treasure panel
+        gamePanel.add(tileGridPanel.getBoard(), BorderLayout.CENTER);// Center map panel
 
-        // 初始化并收集所有玩家棋子按钮，方便后续操作
+        // Initialize and collect all player pawn buttons for later operations
         playerPawnList = new ArrayList<>();
-        playerPawnList.add(playerPanelDown.getP1Pawn());    // 底部面板的玩家1棋子按钮
-        playerPawnList.add(playerPanelDown.getP2Pawn());    // 底部面板的玩家2棋子按钮
-        playerPawnList.add(playerPanelUp.getP1Pawn());      // 顶部面板的玩家1棋子按钮
-        playerPawnList.add(playerPanelUp.getP2Pawn());      // 顶部面板的玩家2棋子按钮
+        playerPawnList.add(playerPanelDown.getP1Pawn());    // Bottom panel's player 1 pawn button
+        playerPawnList.add(playerPanelDown.getP2Pawn());    // Bottom panel's player 2 pawn button
+        playerPawnList.add(playerPanelUp.getP1Pawn());      // Top panel's player 1 pawn button
+        playerPawnList.add(playerPanelUp.getP2Pawn());      // Top panel's player 2 pawn button
 
-        // 获取每个玩家的手牌按钮列表，分别是两个面板上的4个玩家
+        // Get hand card button lists for each player, from both panels' 4 players
         List<JButton> p1HandCards = new ArrayList<>(playerPanelDown.getP1HandCards());
         List<JButton> p2HandCards = new ArrayList<>(playerPanelDown.getP2HandCards());
         List<JButton> p3HandCards = new ArrayList<>(playerPanelUp.getP1HandCards());
         List<JButton> p4HandCards = new ArrayList<>(playerPanelUp.getP2HandCards());
 
-        // 汇总所有玩家的手牌列表，方便统一管理
+        // Consolidate all player hand card lists for unified management
         playerHandCards = new ArrayList<>();
         playerHandCards.add(p1HandCards);
         playerHandCards.add(p2HandCards);
@@ -78,11 +79,10 @@ public class GamePanel {
     }
 
     /**
-     * 获取主游戏面板，用于添加到顶层容器或其他面板中。
-     * @return 返回主游戏 JPanel 对象
+     * Get the main game panel for adding to top-level container or other panels.
+     * @return returns the main game JPanel object
      */
     public JPanel getGamePanel() {
         return gamePanel;
     }
-
 }
