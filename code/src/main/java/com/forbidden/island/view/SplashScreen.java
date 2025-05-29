@@ -1,7 +1,5 @@
 package com.forbidden.island.view;
 
-import com.forbidden.island.view.handler.WelcomeFrame;
-
 import javax.swing.*;
 
 /**
