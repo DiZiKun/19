@@ -5,8 +5,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Objects;
 
 public class ImageUtil {
@@ -14,11 +14,18 @@ public class ImageUtil {
     /**
      * Load an image (original size)
      *
-     * @param imageName image filename, relative to resource path Constant.RESOURCES_PATH
+     * @param imageName image filename, relative to resource path
      * @return Image object, returns null if loading fails
      */
     public static Image getImage(String imageName) {
-        return new ImageIcon(Constant.RESOURCES_PATH + imageName).getImage();
+        try {
+            InputStream is = ImageUtil.class.getResourceAsStream("/image" + imageName);
+            return ImageIO.read(is);
+        } catch (IOException e) {
+            System.err.println("Failed to load image: " + imageName);
+            e.printStackTrace();
+            return null;
+        }
     }
 
     /**
@@ -30,9 +37,11 @@ public class ImageUtil {
      * @return scaled Image object
      */
     public static Image getImage(String imageName, int imageWidth, int imageHeight) {
-        return new ImageIcon(Constant.RESOURCES_PATH + imageName)
-                .getImage()
-                .getScaledInstance(imageWidth, imageHeight, Image.SCALE_SMOOTH);
+        Image image = getImage(imageName);
+        if (image == null) {
+            return null;
+        }
+        return image.getScaledInstance(imageWidth, imageHeight, Image.SCALE_SMOOTH);
     }
 
     /**
@@ -45,24 +54,31 @@ public class ImageUtil {
      * @return processed Image object (rotated then scaled)
      */
     public static Image getImage(String imageName, int imageWidth, int imageHeight, double rotationAngle) {
-        BufferedImage image = null;
-        try {
-            // Load image as BufferedImage
-            image = ImageIO.read(new File(Constant.RESOURCES_PATH + imageName));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        // Return null if image loading fails
+        Image image = getImage(imageName);
         if (image == null) {
             return null;
         }
 
+        // Convert to BufferedImage if needed
+        BufferedImage bufferedImage;
+        if (image instanceof BufferedImage) {
+            bufferedImage = (BufferedImage) image;
+        } else {
+            bufferedImage = new BufferedImage(
+                image.getWidth(null),
+                image.getHeight(null),
+                BufferedImage.TYPE_INT_ARGB
+            );
+            Graphics2D g2d = bufferedImage.createGraphics();
+            g2d.drawImage(image, 0, 0, null);
+            g2d.dispose();
+        }
+
         // Rotate the image
-        BufferedImage bufferedImage = rotate(Objects.requireNonNull(image), rotationAngle);
+        bufferedImage = rotate(bufferedImage, rotationAngle);
 
         // Scale the rotated image
-        return new ImageIcon(bufferedImage).getImage().getScaledInstance(imageWidth, imageHeight, 4);
+        return bufferedImage.getScaledInstance(imageWidth, imageHeight, Image.SCALE_SMOOTH);
     }
 
     /**

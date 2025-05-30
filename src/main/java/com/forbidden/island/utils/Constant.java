@@ -1,7 +1,5 @@
 package com.forbidden.island.utils;
 
-import java.util.Objects;
-
 /**
  * Global constants class used in the game.
  * Contains configuration information such as interface dimensions, image sizes, and resource paths.
@@ -63,11 +61,4 @@ public abstract class Constant {
 
     /** Water meter image height (pixels) */
     public static final int WATER_METER_HEIGHT = 350;
-
-    // ====== Resource Paths ======
-
-    /** Root directory path for image resources (gets the /image folder from the classpath) */
-    public static final String RESOURCES_PATH = Objects.requireNonNull(
-            Constant.class.getResource("/image")
-    ).getPath();
 }

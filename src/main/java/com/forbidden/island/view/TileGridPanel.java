@@ -43,7 +43,7 @@ public class TileGridPanel {
         Dimension boardSize = new Dimension(Constant.BOARD_WIDTH, Constant.BOARD_HEIGHT);
 
         // Create panel with map image background and 6x6 grid layout
-        board = new ImagePanel(Constant.RESOURCES_PATH + "/Map/Arena.jpg", new GridLayout(6, 6, 0, 0));
+        board = new ImagePanel("/Map/Arena.jpg", new GridLayout(6, 6, 0, 0));
 
         // Initialize 36 buttons (corresponding to 6x6 board tiles)
         for (int i = 0; i < 36; i++) {
